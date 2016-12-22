@@ -8,15 +8,15 @@ import (
 
 type ChannelFeedService service
 
-func (s *ChannelFeedService) CreateFeedPost(id, content string, options *CreateFeedPostOptions) (*ChannelFeedPostResult, *http.Response, error) {
-	url := fmt.Sprintf("feed/%v/posts", id)
-	v := map[string]interface{}{"content": content}
-	if options != nil {
-		if options.Share != nil {
-			v["share"] = *options.Share
-		}
+func (s *ChannelFeedService) CreateFeedPost(channelID int64, content string, opt *CreateFeedPostOptions) (*ChannelFeedPostResult, *http.Response, error) {
+	url := fmt.Sprintf("feed/%d/posts", channelID)
+	if opt == nil {
+		opt = new(CreateFeedPostOptions)
 	}
-	req, err := s.client.NewRequest("POST", url, &v)
+	if opt.Content == "" {
+		opt.Content = content
+	}
+	req, err := s.client.NewRequest("POST", url, &opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -25,8 +25,20 @@ func (s *ChannelFeedService) CreateFeedPost(id, content string, options *CreateF
 	return res, resp, err
 }
 
+func (s *ChannelFeedService) DeleteFeedPost(channelID, feedID int64) (*ChannelFeedPost, *http.Response, error) {
+	url := fmt.Sprintf("feed/%d/posts/%d", channelID, feedID)
+	req, err := s.client.NewRequest("DELETE", url, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+	res := new(ChannelFeedPost)
+	resp, err := s.client.Do(req, res)
+	return res, resp, err
+}
+
 type CreateFeedPostOptions struct {
-	Share *bool
+	Content string `json:"content"`
+	Share   *bool  `json:"share,omitempty"`
 }
 
 type ChannelFeedPostResult struct {
@@ -34,11 +46,11 @@ type ChannelFeedPostResult struct {
 }
 
 type ChannelFeedPost struct {
-	ID        string    `json:"id"`
+	ID        int64     `json:"id,string"`
 	CreatedAt time.Time `json:"created_at"`
 	Deleted   bool      `json:"deleted"`
 	Body      string    `json:"body"`
-	User      User      `json:"user"`
+	User      *User     `json:"user"`
 }
 
 type ChannelFeedPostComments struct {
@@ -46,7 +58,7 @@ type ChannelFeedPostComments struct {
 }
 
 type ChannelFeedPostComment struct {
-	ID        string    `json:"id"`
+	ID        int64     `json:"id,string"`
 	Body      string    `json:"body"`
 	CreatedAt time.Time `json:"created_at"`
 	Deleted   bool      `json:"deleted"`

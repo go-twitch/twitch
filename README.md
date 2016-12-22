@@ -11,6 +11,7 @@
 1. [ ] API
   - [ ] Channel Feed
   	- [x] Create Feed Post
+  	- [x] Delete Feed Post
   - [ ] Channels
   - [ ] Chat
   - [ ] Games
