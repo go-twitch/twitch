@@ -2,6 +2,7 @@ package twitch
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -29,5 +30,5 @@ type ErrorResponse struct {
 }
 
 func (e *ErrorResponse) Error() string {
-	return e.Message
+	return fmt.Sprintf("twitch: %v", e.Message)
 }
