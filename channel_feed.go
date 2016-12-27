@@ -9,7 +9,7 @@ import (
 type ChannelFeedService service
 
 func (s *ChannelFeedService) GetMultipleFeedPosts(channelID int64, opt GetMultipleFeedPostsOptions) (*MultipleFeedPostResult, *http.Response, error) {
-	urls := fmt.Sprint("feed/%d/posts", channelID)
+	urls := fmt.Sprintf("feed/%d/posts", channelID)
 	if opt != nil {
 		urls += "?" + url.Values(opt).Encode()
 	}
