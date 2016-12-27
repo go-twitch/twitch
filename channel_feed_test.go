@@ -6,6 +6,14 @@ import (
 	"time"
 )
 
+func TestChannelFeedService_GetMultipleFeedPost(t *testing.T) {
+	setupWithAccess(t)
+	_, _, err := client.ChannelFeed.GetMultipleFeedPosts(testUser, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestChannelFeedService_CreateAndDeleteFeedPost(t *testing.T) {
 	setupWithAccess(t)
 	content := fmt.Sprintf("testing %v", time.Now())

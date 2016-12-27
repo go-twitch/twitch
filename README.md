@@ -10,6 +10,7 @@
 
 1. [ ] API
   - [ ] Channel Feed
+    - [x] Get Multiple Feed Posts
   	- [x] Create Feed Post
   	- [x] Delete Feed Post
   - [ ] Channels

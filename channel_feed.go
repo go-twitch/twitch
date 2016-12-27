@@ -3,10 +3,24 @@ package twitch
 import (
 	"fmt"
 	"net/http"
-	"time"
+	"net/url"
 )
 
 type ChannelFeedService service
+
+func (s *ChannelFeedService) GetMultipleFeedPosts(channelID int64, opt GetMultipleFeedPostsOptions) (*MultipleFeedPostResult, *http.Response, error) {
+	urls := fmt.Sprint("feed/%d/posts", channelID)
+	if opt != nil {
+		urls += "?" + url.Values(opt).Encode()
+	}
+	req, err := s.client.NewRequest("GET", urls, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+	res := new(MultipleFeedPostResult)
+	resp, err := s.client.Do(req, res)
+	return res, resp, err
+}
 
 func (s *ChannelFeedService) CreateFeedPost(channelID int64, content string, opt *CreateFeedPostOptions) (*ChannelFeedPostResult, *http.Response, error) {
 	url := fmt.Sprintf("feed/%d/posts", channelID)
@@ -34,33 +48,4 @@ func (s *ChannelFeedService) DeleteFeedPost(channelID, feedID int64) (*ChannelFe
 	res := new(ChannelFeedPost)
 	resp, err := s.client.Do(req, res)
 	return res, resp, err
-}
-
-type CreateFeedPostOptions struct {
-	Content string `json:"content"`
-	Share   *bool  `json:"share,omitempty"`
-}
-
-type ChannelFeedPostResult struct {
-	Post ChannelFeedPost `json:"post"`
-}
-
-type ChannelFeedPost struct {
-	ID        int64     `json:"id,string"`
-	CreatedAt time.Time `json:"created_at"`
-	Deleted   bool      `json:"deleted"`
-	Body      string    `json:"body"`
-	User      *User     `json:"user"`
-}
-
-type ChannelFeedPostComments struct {
-	Comments []ChannelFeedPostComment `json:"comments"`
-}
-
-type ChannelFeedPostComment struct {
-	ID        int64     `json:"id,string"`
-	Body      string    `json:"body"`
-	CreatedAt time.Time `json:"created_at"`
-	Deleted   bool      `json:"deleted"`
-	User      User      `json:"user"`
 }
