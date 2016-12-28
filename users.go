@@ -6,14 +6,22 @@ import (
 	"net/url"
 )
 
+//UsersService handles communication with activity related methods of GitHub API.
+//https://dev.twitch.tv/docs/v5/reference/users/
 type UsersService service
 
+//GetUser gets a user object based on the OAuth token provided.
+//If the user’s Twitch-registered email address is not verified, null is returned.
+//Get User returns more data than Get User by ID, because Get User is privileged.
+//https://dev.twitch.tv/docs/v5/reference/users/#get-user
 func (s *UsersService) GetUser() (*UserSelf, *http.Response, error) {
 	v := new(UserSelf)
 	resp, err := s.getUser("user", v)
 	return v, resp, err
 }
 
+//GetUserByID gets a specified user object.
+//https://dev.twitch.tv/docs/v5/reference/users/#get-user-by-id
 func (s *UsersService) GetUserByID(userID int64) (*User, *http.Response, error) {
 	v := new(User)
 	resp, err := s.getUser(fmt.Sprintf("users/%d", userID), v)
@@ -29,6 +37,9 @@ func (s *UsersService) getUser(url string, v interface{}) (*http.Response, error
 	return resp, err
 }
 
+//GetUserEmotes gets a list of the emojis and emoticons that the specified user can use in chat.
+//These are both the globally available ones and the channel-specific ones (which can be accessed by any user subscribed to the channel).
+//https://dev.twitch.tv/docs/v5/reference/users/#get-user-emotes
 func (s *UsersService) GetUserEmotes(userID int64) (*EmoticonSetsResponse, *http.Response, error) {
 	url := fmt.Sprintf("users/%d/emotes", userID)
 	req, err := s.client.NewRequest("GET", url, nil)
@@ -40,6 +51,10 @@ func (s *UsersService) GetUserEmotes(userID int64) (*EmoticonSetsResponse, *http
 	return v, resp, err
 }
 
+//CheckUserSubscriptionByChannel checks if a specified user is subscribed to a specified channel.
+//Intended for viewers.
+//There is an error response (422 Unprocessable Entity) if the channel does not have a subscription program.
+//https://dev.twitch.tv/docs/v5/reference/users/#check-user-subscription-by-channel
 func (s *UsersService) CheckUserSubscriptionByChannel(userID, channelID int64) (*EmoticonSetsResponse, *http.Response, error) {
 	url := fmt.Sprintf("users/%d/subscriptions/%d", userID, channelID)
 	req, err := s.client.NewRequest("GET", url, nil)
@@ -54,6 +69,8 @@ func (s *UsersService) CheckUserSubscriptionByChannel(userID, channelID int64) (
 	return v, resp, err
 }
 
+//GetUserFollows gets a list of all channels followed by a specified user, sorted by the date when they started following each channel.
+//https://dev.twitch.tv/docs/v5/reference/users/#get-user-follows
 func (s *UsersService) GetUserFollows(userID int64, opt GetUserFollowsOptions) (*UserFollows, *http.Response, error) {
 	urls := fmt.Sprintf("users/%d/follows/channels", userID)
 	if opt != nil {
@@ -68,6 +85,9 @@ func (s *UsersService) GetUserFollows(userID int64, opt GetUserFollowsOptions) (
 	return v, resp, err
 }
 
+//CheckUserFollowsByChannel checks if a specified user follows a specified channel.
+//If the user is following the channel, a follow object is returned.
+//https://dev.twitch.tv/docs/v5/reference/users/#check-user-follows-by-channel
 func (s *UsersService) CheckUserFollowsByChannel(userID, channelID int64) (*UserFollow, *http.Response, error) {
 	url := fmt.Sprintf("users/%d/follows/channels/%d", userID, channelID)
 	req, err := s.client.NewRequest("GET", url, nil)
@@ -82,6 +102,9 @@ func (s *UsersService) CheckUserFollowsByChannel(userID, channelID int64) (*User
 	return v, resp, err
 }
 
+//FollowChannel adds a specified user to the followers of a specified channel.
+//There is an error response (422 Unprocessable Entity) if the channel could not be followed.
+//https://dev.twitch.tv/docs/v5/reference/users/#follow-channel
 func (s *UsersService) FollowChannel(userID, channelID int64, opt *FollowChannelOptions) (*UserFollow, *http.Response, error) {
 	url := fmt.Sprintf("users/%d/follows/channels/%d", userID, channelID)
 	req, err := s.client.NewRequest("PUT", url, opt)
@@ -93,6 +116,8 @@ func (s *UsersService) FollowChannel(userID, channelID int64, opt *FollowChannel
 	return v, resp, err
 }
 
+//UnfollowChannel deletes a specified user from the followers of a specified channel.
+//https://dev.twitch.tv/docs/v5/reference/users/#unfollow-channel
 func (s *UsersService) UnfollowChannel(userID, channelID int64) (*http.Response, error) {
 	url := fmt.Sprintf("users/%d/follows/channels/%d", userID, channelID)
 	req, err := s.client.NewRequest("DELETE", url, nil)
@@ -102,6 +127,8 @@ func (s *UsersService) UnfollowChannel(userID, channelID int64) (*http.Response,
 	return s.client.Do(req, nil)
 }
 
+//GetUserBlockList gets a user’s block list.
+//https://dev.twitch.tv/docs/v5/reference/users/#get-user-block-list
 func (s *UsersService) GetUserBlockList(userID int64, opt GetUserBlocksOptions) (*UserBlocks, *http.Response, error) {
 	urls := fmt.Sprintf("users/%d/blocks", userID)
 	if opt != nil {
@@ -116,6 +143,8 @@ func (s *UsersService) GetUserBlockList(userID int64, opt GetUserBlocksOptions) 
 	return v, resp, err
 }
 
+//BlockUser blocks the target user.
+//https://dev.twitch.tv/docs/v5/reference/users/#block-user
 func (s *UsersService) BlockUser(userID, channelID int64) (*UserBlock, *http.Response, error) {
 	url := fmt.Sprintf("users/%d/blocks/%d", userID, channelID)
 	req, err := s.client.NewRequest("PUT", url, nil)
@@ -127,6 +156,8 @@ func (s *UsersService) BlockUser(userID, channelID int64) (*UserBlock, *http.Res
 	return v, resp, err
 }
 
+//UnblockUser unblocks the target user.
+//https://dev.twitch.tv/docs/v5/reference/users/#unblock-user
 func (s *UsersService) UnblockUser(userID, channelID int64) (*http.Response, error) {
 	url := fmt.Sprintf("users/%d/blocks/%d", userID, channelID)
 	req, err := s.client.NewRequest("DELETE", url, nil)

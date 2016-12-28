@@ -5,8 +5,10 @@ import (
 	"time"
 )
 
+//Scope models a GitHub authorization scope.
 type Scope string
 
+//This is the set of scopes for Twitch API v5
 const (
 	ScopeChannelCheckSubscription = Scope("channel_check_subscription")
 	ScopeChannelCommercial        = Scope("channel_commercial")
@@ -23,8 +25,6 @@ const (
 	ScopeUserRead                 = Scope("user_read")
 	ScopeUserSubscriptions        = Scope("user_subscriptions")
 )
-
-type Scopes []Scope
 
 func (c *Client) State() (*StateResponse, *http.Response, error) {
 	req, err := c.NewRequest("GET", "", nil)
@@ -43,7 +43,7 @@ type StateResponse struct {
 	Token struct {
 		Authorization struct {
 			CreatedAt time.Time `json:"created_at"`
-			Scopes    Scopes    `json:"scopes"`
+			Scopes    []Scope   `json:"scopes"`
 		} `json:"authorization"`
 		ClientID string `json:"client_id"`
 		UserID   int64  `json:"user_id,string"`

@@ -7,6 +7,7 @@ import (
 
 type GetUserFollowsOptions url.Values
 
+//Limit sets maximum number of most-recent objects to return. Default: 25. Maximum: 100.
 func (o GetUserFollowsOptions) Limit(limit int) {
 	url.Values(o).Set("limit", strconv.Itoa(limit))
 }

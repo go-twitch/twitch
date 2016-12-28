@@ -25,6 +25,7 @@ type Client struct {
 
 	ChannelFeed *ChannelFeedService
 	Users       *UsersService
+	Games       *GamesService
 }
 
 type service struct {
@@ -44,6 +45,7 @@ func NewClient(client *http.Client) *Client {
 
 	c.ChannelFeed = (*ChannelFeedService)(&c.common)
 	c.Users = (*UsersService)(&c.common)
+	c.Games = (*GamesService)(&c.common)
 
 	return c
 }
