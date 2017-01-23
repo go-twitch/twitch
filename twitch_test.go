@@ -3,6 +3,8 @@ package twitch
 import (
 	"os"
 	"testing"
+
+	"golang.org/x/oauth2"
 )
 
 var client *Client
@@ -26,15 +28,21 @@ func setup(t *testing.T) {
 	}
 	client = NewClient(nil)
 	client.ClientID = clientID
-	client.UserAgent = "go-twitch"
+	client.UserAgent = "go-twitch test"
 }
 
 func setupWithAccess(t *testing.T) {
-	setup(t)
 	accessToken := os.Getenv("TWITCH_ACCESS_TOKEN")
 	if accessToken == "" {
 		t.Log("You need to set TWITCH_ACCESS_TOKEN!!")
 		t.FailNow()
 	}
-	client.AccessToken = accessToken
+
+	token := &oauth2.Token{
+		AccessToken: accessToken,
+		TokenType:   "OAuth",
+	}
+	cli := oauth2.NewClient(nil, oauth2.StaticTokenSource(token))
+	client = NewClient(cli)
+	client.UserAgent = "go-twitch test"
 }

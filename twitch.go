@@ -15,11 +15,10 @@ const (
 )
 
 type Client struct {
-	client      *http.Client
-	BaseURL     *url.URL
-	UserAgent   string
-	ClientID    string
-	AccessToken string
+	client    *http.Client
+	BaseURL   *url.URL
+	UserAgent string
+	ClientID  string
 
 	common service
 
@@ -81,9 +80,6 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	}
 	if c.ClientID != "" {
 		req.Header.Set("Client-ID", c.ClientID)
-	}
-	if c.AccessToken != "" {
-		req.Header.Set("Authorization", "OAuth "+c.AccessToken)
 	}
 	return req, nil
 }
