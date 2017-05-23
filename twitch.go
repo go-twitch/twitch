@@ -18,7 +18,8 @@ type Client struct {
 	client    *http.Client
 	BaseURL   *url.URL
 	UserAgent string
-	ClientID  string
+	Config    *OAuth2Config
+	Token     *OAuth2Token
 
 	common service
 
@@ -31,7 +32,7 @@ type service struct {
 	client *Client
 }
 
-func NewClient(client *http.Client) *Client {
+func NewClient(client *http.Client, config *OAuth2Config, token *OAuth2Token) *Client {
 	if client == nil {
 		client = http.DefaultClient
 	}
@@ -39,6 +40,8 @@ func NewClient(client *http.Client) *Client {
 	c := &Client{
 		client:  client,
 		BaseURL: baseURL,
+		Config:  config,
+		Token:   token,
 	}
 	c.common.client = c
 
@@ -75,11 +78,12 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 		req.Header.Set("Content-Type", "application/json")
 	}
 	req.Header.Set("Accept", mediaTypeV5)
+	req.Header.Set("Client-ID", c.Config.ClientID)
+	if c.Token != nil && c.Token.AccessToken != "" {
+		req.Header.Set("Authorization", "OAuth "+c.Token.AccessToken)
+	}
 	if c.UserAgent != "" {
 		req.Header.Set("User-Agent", c.UserAgent)
-	}
-	if c.ClientID != "" {
-		req.Header.Set("Client-ID", c.ClientID)
 	}
 	return req, nil
 }

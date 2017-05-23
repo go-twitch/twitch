@@ -1,6 +1,10 @@
 package twitch
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type MultipleFeedPostResult struct {
 	Cursor uint64            `json:"_cursor,string"`
@@ -14,7 +18,7 @@ type ChannelFeedPostResult struct {
 }
 
 type ChannelFeedPost struct {
-	ID        int64     `json:"id,string"`
+	ID        uuid.UUID `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
 	Deleted   bool      `json:"deleted"`
 	Body      string    `json:"body"`

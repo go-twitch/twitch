@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+
+	"github.com/google/uuid"
 )
 
 //ChannelFeedService handles communication with activity related methods of GitHub API.
@@ -28,8 +30,8 @@ func (s *ChannelFeedService) GetMultipleFeedPosts(channelID int64, opt GetMultip
 
 //GetFeedPost gets a specified post from a specified channel feed.
 //https://dev.twitch.tv/docs/v5/reference/channel-feed/#get-feed-post
-func (s *ChannelFeedService) GetFeedPost(channelID, postID int64, opt GetFeedPostOptions) (*ChannelFeedPost, *http.Response, error) {
-	urls := fmt.Sprintf("feed/%d/posts/%d", channelID, postID)
+func (s *ChannelFeedService) GetFeedPost(channelID, int64, postID uuid.UUID, opt GetFeedPostOptions) (*ChannelFeedPost, *http.Response, error) {
+	urls := fmt.Sprintf("feed/%d/posts/%v", channelID, postID)
 	if opt != nil {
 		urls += "?" + url.Values(opt).Encode()
 	}
@@ -64,8 +66,8 @@ func (s *ChannelFeedService) CreateFeedPost(channelID int64, content string, opt
 
 //DeleteFeedPost deletes a specified post in a specified channel feed.
 //https://dev.twitch.tv/docs/v5/reference/channel-feed/#delete-feed-post
-func (s *ChannelFeedService) DeleteFeedPost(channelID, feedID int64) (*ChannelFeedPost, *http.Response, error) {
-	url := fmt.Sprintf("feed/%d/posts/%d", channelID, feedID)
+func (s *ChannelFeedService) DeleteFeedPost(channelID int64, postID uuid.UUID) (*ChannelFeedPost, *http.Response, error) {
+	url := fmt.Sprintf("feed/%d/posts/%v", channelID, postID)
 	req, err := s.client.NewRequest("DELETE", url, nil)
 	if err != nil {
 		return nil, nil, err
