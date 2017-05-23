@@ -34,7 +34,7 @@ func (c *OAuth2Config) AuthCodeURL(state string) string {
 		v.Set("scope", strings.Join(s, " "))
 	}
 	if state != "" {
-		v.Set("scope", state)
+		v.Set("state", state)
 	}
 	return oauth2AuthURL + "?" + v.Encode()
 }
