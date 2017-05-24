@@ -23,8 +23,9 @@ type OAuth2Config struct {
 
 func (c *OAuth2Config) AuthCodeURL(state string) string {
 	v := url.Values{
-		"client_id":    {c.ClientID},
-		"redirect_uri": {c.RedirectURI},
+		"client_id":     {c.ClientID},
+		"redirect_uri":  {c.RedirectURI},
+		"response_type": {"code"},
 	}
 	if c.Scopes != nil {
 		s := make([]string, len(c.Scopes))
@@ -88,6 +89,6 @@ func (c *OAuth2Config) Revoke(client *http.Client, token *OAuth2Token) error {
 }
 
 type OAuth2Token struct {
-	AccessToken string `json:"access_token"`
-	Scope       string `json:"scope"`
+	AccessToken string   `json:"access_token"`
+	Scope       []string `json:"scope"`
 }
