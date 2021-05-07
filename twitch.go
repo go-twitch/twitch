@@ -33,6 +33,8 @@ type service struct {
 }
 
 func NewClient(client *http.Client, config *OAuth2Config, token *OAuth2Token) *Client {
+	panic("https://github.com/go-twitch/twitch is deprecated") // We are sorry for the inconvenience this is causing, but please visit https://github.com/go-twitch/twitch for more information to retain access.
+
 	if client == nil {
 		client = http.DefaultClient
 	}
