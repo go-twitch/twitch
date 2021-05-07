@@ -1,25 +1,4 @@
-# go-twitch
+# DEPRECATED
 
-[![GoDoc](https://godoc.org/gopkg.in/twitch.v5?status.svg)](https://godoc.org/gopkg.in/twitch.v5)
-[![Build Status](https://travis-ci.org/go-twitch/twitch.svg?branch=v5)](https://travis-ci.org/go-twitch/twitch)
-
-### Install
-`go get -u gopkg.in/twitch.v5`
-
-### Progress
-
-1. [ ] API
-  - [ ] Channel Feed
-    - [x] Get Multiple Feed Posts
-  	- [x] Create Feed Post
-  	- [x] Delete Feed Post
-  - [ ] Channels
-  - [ ] Chat
-  - [ ] Games
-  - [ ] Ingests
-  - [ ] Search
-  - [ ] Streams
-  - [ ] Teams
-  - [x] Users
-  - [ ] Videos
-2. [ ] Chat, Upload, etc...
+Something great is coming soon, but we are deprecating this library for now.  
+Please create a fork of your own to retain access.
